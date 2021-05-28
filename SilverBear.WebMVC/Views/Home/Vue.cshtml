@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "Vue";
+}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<div id="app">
+    <h1>Vue</h1>
+    {{ message }}
+    <span v-bind:title="message1">
+        Hello World!!
+    </span>
+    <span v-if="seen">Now you see me</span>
+    <div>
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            message1: 'You loaded this page on ' + new Date().toLocaleString(),
+            seen: true,
+            todos: [
+                { text: 'Angular' },
+                { text: 'React' },
+                { text: 'Vue' },
+            ]
+        }
+    });
+</script>
+

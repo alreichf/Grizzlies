@@ -1,0 +1,61 @@
+﻿@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@{
+    ViewData["Title"] = "Configuration";
+}
+<script src="~/lib/knockout/knockout-latest.min.js"></script>
+
+@model IEnumerable<ConfigurationViewModel>
+<h3>Configuration</h3>
+<div>
+    <div class="col">
+        <table class="table table-sm table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>RAM Size</th>
+                    <th>HD Size</th>
+                    <th>USB</th>
+                    <th>GPU Make</th>
+                    <th>Laptop Weight</th>
+                    <th>power</th>
+                    <th>RAM Make</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: configs">
+                <tr data-bind="template: {name: 'configTemplate', data: $data}">
+            </tbody>
+        </table>
+    </div>
+    <div class="col">
+        <a asp-controller="Configuration" asp-action="AddConfiguration" asp-route-id="0" class="btn btn-primary">Add</a>
+    </div>
+
+    <script id="configTemplate" type="text/html">
+        <td data-bind="text: RamViewModel.Name"></td>
+        <td data-bind="text: HardDiskViewModel.Size + ' ' + HardDiskViewModel.Type"></td>
+        <td data-bind="text: PortViewModel.Name"></td>
+        <td data-bind="text: GpuViewModel.Name"></td>
+        <td data-bind="text: LaptopViewModel.Weight"></td>
+        <td data-bind="text: PowerSupplyViewModel.Name"></td>
+        <td data-bind="text: RamViewModel.Make"></td>
+        <td>
+            <a data-bind="attr: { href: '@Url.Action("Edit", "Configuration")/' +  LaptopViewModel.LaptopID }" aria-label="Modify an existing Config" class="btn btn-sm btn-secondary">Edit</a>
+        </td>
+    </script>
+</div>
+<script>
+    function ConfigViewModel() {
+        this.configs = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));       
+    };
+
+    this.chosenLaptopID = function () { return this.configs.LaptopViewModel.LaptopID; };
+    this.resetLaptopID = function () {
+        this.chosenLaptopID(null);
+    }
+
+    ko.applyBindings(new ConfigViewModel());
+</script>
+

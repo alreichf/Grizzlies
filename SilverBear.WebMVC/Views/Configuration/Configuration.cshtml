@@ -1,0 +1,74 @@
+﻿@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@{
+    ViewData["Title"] = "Configuration";
+}
+
+<script src="~/lib/knockout/knockout-latest.min.js"></script>
+@model ConfigurationsViewModel
+<div class="d-flex justify-content-center align-items-center mt-xl-5 pt-xl-3" style="max-width: 60%;">
+    <div class="col card offset-1 card-shadow">
+        <div class="card-body">
+            <h2>Configuration</h2>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            @using (Html.BeginForm("AddConfiguration", "Configuration", FormMethod.Post))
+            {
+                <input type="hidden" name="ConfigurationViewModel.LaptopViewModel.LaptopID" data-bind="value: chosenLaptopId" />
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.LaptopViewModel.Weight">Weight</label>
+                    <input name="ConfigurationViewModel.LaptopViewModel.Weight" class="form-control form-row" data-bind="value: chosenLaptopWeight"/>
+                </div>
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.RamViewModel.RamID">Ram</label>
+                    <select name="ConfigurationViewModel.RamViewModel.RamID" class="form-control form-row" data-bind="options: rams, optionsValue: 'RamID', optionsCaption: 'Select', optionsText: 'Name', value: chosenRam"></select>
+                </div>
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.HardDiskViewModel.HardDiskID">Hard Disc</label>
+                    <select name="ConfigurationViewModel.HardDiskViewModel.HardDiskID" class="form-control form-row" data-bind="options: hardDisks, optionsValue: 'HardDiskID', optionsCaption: 'Select', optionsText: function(item){ return ko.unwrap(item.Size) + '-' + ko.unwrap(item.Type); }, value: chosenDisk"></select>
+                </div>
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.PowerSupplyViewModel.PowerSupplyID">Power Supply</label>
+                    <select name="ConfigurationViewModel.PowerSupplyViewModel.PowerSupplyID" class="form-control form-row" data-bind="options: powerSupplies, optionsValue: 'PowerSupplyID', optionsCaption: 'Select', optionsText: 'Name', value: chosenPowerSupply"></select>
+                </div>
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.GpuViewModel.GpuID">GPU</label>
+                    <select name="ConfigurationViewModel.GpuViewModel.GpuID" class="form-control form-row" data-bind="options: gpus, optionsValue: 'GpuID', optionsCaption: 'Select', optionsText: 'Name', value: chosenGpu"></select>
+                </div>
+                <div class="form-group">
+                    <label for="ConfigurationViewModel.PortViewModel.PortID">USB Port</label>
+                    <select name="ConfigurationViewModel.PortViewModel.PortID" class="form-control form-row" data-bind="options: ports, optionsValue: 'PortID', optionsCaption: 'Select', optionsText: 'Name', value: chosenPort"></select>
+                </div>
+                <div class="form-group">
+                    <a asp-controller="Configuration" asp-action="Configurations" class="btn btn-primary">Cancel</a>
+                    <input type="submit" value="Add" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    function ConfigsViewModel() {
+        this.config = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ConfigurationViewModel));
+        this.rams = ko.observableArray(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RamViewModels)));
+        this.hardDisks = ko.observableArray( @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.HardDiscViewModels)));
+        this.powerSupplies = ko.observableArray(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PowerSupplyViewModels)));
+        this.gpus = ko.observableArray(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GpuViewModels)));
+        this.ports = ko.observableArray(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PortViewModels)));
+
+        this.chosenLaptopId = ko.observable(this.config.LaptopViewModel != null ? this.config.LaptopViewModel.LaptopID : 0);
+        this.chosenLaptopWeight = ko.observable(this.config.LaptopViewModel != null ? this.config.LaptopViewModel.Weight : "");
+        this.chosenRam = ko.observable(this.config.RamViewModel !== null ? this.config.RamViewModel.RamID : "");
+        this.chosenDisk = ko.observable(this.config.HardDiskViewModel != null ? this.config.HardDiskViewModel.HardDiskID : "");
+        this.chosenPowerSupply = ko.observable(this.config.PowerSupplyViewModel != null ? this.config.PowerSupplyViewModel.PowerSupplyID : "");
+        this.chosenGpu = ko.observable(this.config.GpuViewModel != null ? this.config.GpuViewModel.GpuID : "");
+        this.chosenPort = ko.observable(this.config.PortViewModel != null ? this.config.PortViewModel.PortID : "");
+
+        /*this.Rams().forEach(function (r) {
+            this.ram = ko.computed(function () { return ko.unwrap(r.Size) + '-' + ko.unwrap(r.Type); }, this);
+        });*/
+    };
+
+    ko.applyBindings(new ConfigsViewModel());
+</script>
